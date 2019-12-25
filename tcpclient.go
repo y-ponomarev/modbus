@@ -8,7 +8,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -53,6 +52,11 @@ type tcpPackager struct {
 	transactionId uint32
 	// Broadcast address is 0
 	SlaveId byte
+}
+
+// SetSlave sets modbus slave id for the next client operations
+func (mb *tcpPackager) SetSlave(slaveId byte) {
+	mb.SlaveId = slaveId
 }
 
 // Encode adds modbus application protocol header:
@@ -135,7 +139,7 @@ type tcpTransporter struct {
 	// Idle timeout to close the connection
 	IdleTimeout time.Duration
 	// Transmission logger
-	Logger *log.Logger
+	Logger logger
 
 	// TCP connection
 	mu           sync.Mutex
